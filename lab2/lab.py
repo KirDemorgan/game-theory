@@ -354,11 +354,13 @@ def task_six_output(data):
 
 
 def solve_task_1(alpha_h, n_day, target_k):
+    # Рассчитываем интенсивности поступления и обслуживания
     arrival_rate = n_day / 24.0
     service_rate = 1.0 / alpha_h
     intensity = arrival_rate / service_rate
 
     def get_metrics(k):
+        # Сумма вероятностей для формулы Эрланга
         sum_p = sum((intensity**i) / math.factorial(i) for i in range(k + 1))
         p0 = 1.0 / sum_p
         p_refusal = (intensity**k) / math.factorial(k) * p0
@@ -368,6 +370,7 @@ def solve_task_1(alpha_h, n_day, target_k):
         utilization = k_busy / k
         return p0, p_refusal, throughput, absolute_throughput, k_busy, utilization
 
+    # Ищем минимальное число каналов для обеспечения Q >= 95%
     k_min = 1
     while True:
         _, _, Q, _, _, _ = get_metrics(k_min)
@@ -414,6 +417,7 @@ def solve_task_2(lmbda_day, t_min, alpha_cost, n_queue):
 
     best_k = k_min
     best_cost = cost_min
+    # Ищем оптимальное число каналов с минимальными затратами
     for k in range(k_min + 1, k_min + 10):
         _, _, _, _, _, cost = get_metrics_inf(k)
         if cost < best_cost:
